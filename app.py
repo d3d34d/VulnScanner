@@ -22,22 +22,19 @@ def run_scan():
     scan_id = str(uuid.uuid4())
     scan_results[scan_id] = {"status": "running", "results": None}
     
-    # Run scan in a separate thread
-    def scan_task():
-        try:
-            # Default ports for web interface to keep it reasonably fast
-            ports = [21,22,80,443,3306,8080]
-            scanner = VulnScanner(target=target, ports=ports, crawl_depth=1, output_file=None)
-            scanner.run()
-            scan_results[scan_id]["status"] = "completed"
-            scan_results[scan_id]["results"] = scanner.results
-        except Exception as e:
-            scan_results[scan_id]["status"] = "error"
-            scan_results[scan_id]["error"] = str(e)
+    # Vercel does not support background threads in Python Serverless functions.
+    # We must run it synchronously before sending the response.
+    try:
+        # Limited ports for web interface to avoid Vercel 10s timeout
+        ports = [80, 443]
+        scanner = VulnScanner(target=target, ports=ports, crawl_depth=1, output_file=None)
+        scanner.run()
+        scan_results[scan_id]["status"] = "completed"
+        scan_results[scan_id]["results"] = scanner.results
+    except Exception as e:
+        scan_results[scan_id]["status"] = "error"
+        scan_results[scan_id]["error"] = str(e)
             
-    thread = threading.Thread(target=scan_task)
-    thread.start()
-    
     return jsonify({"scan_id": scan_id})
 
 @app.route('/api/scan/<scan_id>', methods=['GET'])
@@ -47,4 +44,4 @@ def get_scan_status(scan_id):
     return jsonify(scan_results[scan_id])
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    app.run(debug=True, port=5001)
