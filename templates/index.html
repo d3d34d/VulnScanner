@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VulnScanner | Automated Security Intelligence</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <!-- Background Effects -->
+    <div class="glow-orb top-left"></div>
+    <div class="glow-orb bottom-right"></div>
+    <div class="grid-bg"></div>
+
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <div class="logo">
+                <i data-lucide="shield-alert" class="logo-icon"></i>
+                <h1>Vuln<span>Scanner</span></h1>
+            </div>
+            <p class="subtitle">Automated Security Intelligence Platform</p>
+        </header>
+
+        <!-- Main Card -->
+        <main class="glass-panel">
+            <div class="input-group">
+                <div class="input-wrapper">
+                    <i data-lucide="globe" class="input-icon"></i>
+                    <input type="text" id="target-url" placeholder="Enter target URL (e.g., http://example.com)" autocomplete="off">
+                </div>
+                <button id="scan-btn" class="primary-btn">
+                    <span class="btn-text">Initiate Scan</span>
+                    <i data-lucide="zap" class="btn-icon"></i>
+                </button>
+            </div>
+
+            <!-- Loader / Status -->
+            <div id="status-container" class="status-container hidden">
+                <div class="radar">
+                    <div class="sweep"></div>
+                </div>
+                <p id="status-text" class="status-text">Initializing Security Scan...</p>
+                <div class="progress-bar">
+                    <div id="progress-fill" class="progress-fill"></div>
+                </div>
+            </div>
+
+            <!-- Results Section -->
+            <div id="results-container" class="results-container hidden">
+                <h2><i data-lucide="activity"></i> Scan Report</h2>
+                
+                <div class="results-grid">
+                    <!-- Ports Card -->
+                    <div class="result-card">
+                        <div class="card-header">
+                            <i data-lucide="server"></i>
+                            <h3>Open Ports</h3>
+                        </div>
+                        <ul id="ports-list" class="data-list"></ul>
+                    </div>
+
+                    <!-- Headers Card -->
+                    <div class="result-card">
+                        <div class="card-header">
+                            <i data-lucide="file-code"></i>
+                            <h3>Missing Headers</h3>
+                        </div>
+                        <ul id="headers-list" class="data-list"></ul>
+                    </div>
+
+                    <!-- Vulnerabilities Card -->
+                    <div class="result-card full-width">
+                        <div class="card-header">
+                            <i data-lucide="alert-triangle" class="warning-icon"></i>
+                            <h3>Identified Vulnerabilities</h3>
+                        </div>
+                        <div id="vuln-list" class="vuln-content"></div>
+                    </div>
+                </div>
+                
+                <button id="new-scan-btn" class="secondary-btn">Run Another Scan</button>
+            </div>
+        </main>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>
